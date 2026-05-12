@@ -59,7 +59,6 @@ router.get('/:id' , async(req: Request , res: Response ) => {
     }
 
     const cleanPatient = patient.toJSON() as unknown as  Record<string, unknown>;
-    delete cleanPatient.ssn;
 
     res.json(cleanPatient);
     

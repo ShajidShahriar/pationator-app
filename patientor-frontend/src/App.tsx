@@ -1,45 +1,65 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import { Button, Divider, Container, Typography } from '@mui/material';
-
-import { apiBaseUrl } from "./constants";
-import { Patient } from "./types";
-
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Patient , Diagnosis } from "./types";
 import patientService from "./services/patients";
-import PatientListPage from "./components/PatientListPage";
+import diagnosisService from "./services/diagnoses";
+import PatientList from "./components/patientList";
+import PatientDetails from "./components/PatientDetails";
+import AddPatientForm from "./components/AddPatientForm";
+import { PatientFormValues } from "./types";
+
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
-
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   useEffect(() => {
-    void axios.get<void>(`${apiBaseUrl}/ping`);
-
-    const fetchPatientList = async () => {
-      const patients = await patientService.getAll();
-      setPatients(patients);
+    const fetchPatients = async () => {
+      const patientData = await patientService.getAll();
+      const diagnosesData = await diagnosisService.getAll()
+      setPatients(patientData);
+      setDiagnoses(diagnosesData)
     };
-    void fetchPatientList();
+    fetchPatients();
   }, []);
-  
+
+  const submitNewPatient = async (values: PatientFormValues) => {
+    try {
+      const newPatient = await patientService.create(values);
+      
+      setPatients(patients.concat(newPatient));
+      
+    } catch (error) {
+      console.error("Failed to add patient", error);
+      alert("Error adding patient! Check your terminal.");
+    }
+  };
+
   return (
-    <div className="App">
-      <Router>
-        <Container>
-          <Typography variant="h3" sx={{ marginBottom: "0.5em" }}>
-            Patientor
-          </Typography>
-          <Button component={Link} to="/" variant="contained" color="primary">
-            Home
-          </Button>
-          <Divider sx={{ marginY: 2 }} />
+    <Router>
+      <div className="App">
+        <header>
+          <h1>Patientor</h1>
+          <nav>
+            <Link to="/" style={{ marginRight: "10px" }}>Home</Link> 
+          </nav>
+        </header>
+
+        <main style={{ marginTop: "20px" }}>
           <Routes>
-            <Route path="/" element={<PatientListPage patients={patients} setPatients={setPatients} />} />
+            <Route path="/" element={
+              <div>
+                <AddPatientForm onSubmit={submitNewPatient} />
+                <PatientList patients={patients} />
+              </div>
+            } />
+            <Route path="/patients/:id" element={<PatientDetails diagnoses={diagnoses} />} />
           </Routes>
-        </Container>
-      </Router>
-    </div>
+        </main>
+      </div>
+    </Router>
   );
 };
+
+// The component implementations were moved to separate files under src/components.
 
 export default App;
