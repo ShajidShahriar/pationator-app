@@ -7,6 +7,7 @@ const patientSchema = new Schema<Patient>({
     ssn:{ type : String , required : true ,unique:true} ,
     gender:{type: String, required: true},
     occupation:{type: String, required: true},
+    entries: [{ type: Schema.Types.Mixed, default: [] }]
 })
 
 patientSchema.set('toJSON', {

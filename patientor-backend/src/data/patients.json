@@ -1,11 +1,33 @@
 [
   {
-    "name": "John McClane",
-    "dateOfBirth": "1986-07-09",
-    "ssn": "090786-122X",
-    "gender": "male",
-    "occupation": "New York City Cop"
-  },
+  "name": "John McClane",
+  "dateOfBirth": "1986-07-09",
+  "ssn": "090786-122X",
+  "gender": "male",
+  "occupation": "New York City Cop",
+  "entries": [
+    {
+      "id": "d811e46d-70b3-4d90-b090-4535c7cf8f99",
+      "date": "2015-01-02",
+      "type": "Hospital",
+      "specialist": "MD House",
+      "diagnosisCodes": ["S62.5"],
+      "description": "Healing time for broken toe was normal.",
+      "discharge": {
+        "date": "2015-01-16",
+        "criteria": "Toe is healed."
+      }
+    },
+    {
+      "id": "fb59f760-4c54-4761-9f11-17564d27533a",
+      "date": "2019-08-05",
+      "type": "HealthCheck",
+      "specialist": "Blake Ross",
+      "healthCheckRating": 0,
+      "description": "Yearly control visit. Cholecystectomy recovery is oversighted."
+    }
+  ]
+},
   {
     "name": "Martin Riggs",
     "dateOfBirth": "1979-01-30",

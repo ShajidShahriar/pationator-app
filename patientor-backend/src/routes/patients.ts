@@ -3,6 +3,7 @@ import PatientModel from '../models/patient';
 import { NonSensitivePatient } from '../types';
 import { NewPatientSchema } from '../utils';
 import { z } from 'zod';
+import { request } from 'node:http';
 
 const router = express.Router();
 //get==========
@@ -44,5 +45,28 @@ router.post('/' ,async (req:Request ,res: Response) =>{
     }
 })
 
+//get=============
+
+router.get('/:id' , async(req: Request , res: Response ) => {
+  try {
+    const { id } = req.params;
+
+    const patient = await PatientModel.findById(id);
+
+    if (!patient) {
+      res.status(404).send({ error: 'Patient not found' });
+      return; 
+    }
+
+    const cleanPatient = patient.toJSON() as unknown as  Record<string, unknown>;
+    delete cleanPatient.ssn;
+
+    res.json(cleanPatient);
+    
+  } catch (error) {
+    res.status(400).send({ error: 'Malformed patient ID' });
+  }
+  
+})
 
 export default router;
