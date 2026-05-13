@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Gender } from "../types";
 import { PatientFormValues } from "../types";
-import { Patient } from "../types";
 interface Props {
   onSubmit: (values: PatientFormValues) => void;
 }
@@ -15,7 +14,7 @@ const AddPatientForm = ({ onSubmit }: Props) => {
   const [gender, setGender] = useState<Gender>(Gender.Other);
 
 const addPatient = (event: React.FormEvent) => {
-    event.preventDefault(); // STOPS the page from reloading!
+    event.preventDefault(); 
     
     // 1. Package the data
     onSubmit({

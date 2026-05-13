@@ -17,4 +17,45 @@ export const NewPatientSchema = z.object({
   gender: GenderEnum
 });
 
+const BaseEntrySchema = z.object({
+  description: z.string().min(1, "Description cannot be empty"),
+  date: z.string().date("Invalid date format"),
+  specialist: z.string().min(1, "Specialist cannot be empty"),
+  diagnosisCodes: z.array(z.string()).optional()
+});
+
+// 2. The Health Check Rules
+const HealthCheckSchema = BaseEntrySchema.extend({
+  type: z.literal("HealthCheck"),
+  healthCheckRating: z.number().min(0).max(3)
+});
+
+// 3. The Hospital Rules
+const HospitalSchema = BaseEntrySchema.extend({
+  type: z.literal("Hospital"),
+  discharge: z.object({
+    date: z.string().date("Invalid discharge date"),
+    criteria: z.string().min(1, "Discharge criteria needed")
+  })
+});
+
+// 4. The Occupational Healthcare Rules
+const OccupationalSchema = BaseEntrySchema.extend({
+  type: z.literal("OccupationalHealthcare"),
+  employerName: z.string().min(1, "Employer name required"),
+  sickLeave: z.object({
+    startDate: z.string().date(),
+    endDate: z.string().date()
+  }).optional()
+});
+
+// 5. THE ULTIMATE SHAPESHIFTER BOUNCER
+export const NewEntrySchema = z.discriminatedUnion("type", [
+  HealthCheckSchema,
+  HospitalSchema,
+  OccupationalSchema
+]);
+
+
 export type NewPatientEntry = z.infer<typeof NewPatientSchema>;
+export type NewEntry = z.infer<typeof NewEntrySchema>;
